@@ -367,6 +367,7 @@ docker exec -ti karlibts  osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM 
 ```
 xhost +
 ```
+```
 docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
 ```
 ## CODE MANAGING BTS
@@ -375,4 +376,99 @@ lxc exec KarliBTS -- telnet localhost 4242
 ```
 ```
 lxc exec KarliBTS -- telnet localhost 4241
+```
+
+## RUNNING SPOOFING EXTENSION WITH SCRIPT1
+Tape ctrl+shit+T
+```
+docker  exec -ti  karlibts bash
+```
+```
+wget https://raw.githubusercontent.com/SitrakaResearchAndPOC/nitb-script-all/main/osmo-nitb-scripts.zip
+```
+```
+apt-get install zip
+```
+```
+unzip osmo-nitb-scripts.zip
+```
+```
+rm -rf osmo-nitb-scripts.zip
+```
+```
+mv osmo-nitb-scripts/scripts_spoof1 /
+```
+```
+mv osmo-nitb-scripts/scripts_spoof2 /
+```
+## spoof script1 modification
+```
+cd  scripts_spoof1
+```
+```
+nano finding_imsi_extenstion.sh
+```
+Change sqlite file as following /hlr.sqlite3
+```
+bash finding_imsi_extenstion.sh
+```
+```
+nano delete_all.sh
+```
+Change sqlite file as following /hlr.sqlite3
+```
+nano set_imsi_extension.sh
+```
+Change sqlite file as following /hlr.sqlite3
+```
+nano sending_sms_broadcast.py
+```
+Change sqlite file as following /hlr.sqlite3
+```
+exit
+```
+## REMARK AS SPOOF2
+```
+docker exec -ti karlibts  bash
+```
+```
+cd  scripts_spoof2
+```
+```
+nano show_subscribers.py
+```
+Change sqlite file as following /hlr.sqlite3
+```
+nano sms_broadcast.py
+```
+Change sqlite file as following /hlr.sqlite3
+```
+nano sms_send_source_dest_msg.py
+```
+Change sqlite file as following /hlr.sqlite3
+```
+exit
+```
+## Spoof script2 modification
+```
+docker exec -ti karlibts nano scripts_spoof2/sms_send_source_dest_msg.py 
+```
+Before launching sms_send_source_dest_msg.py , please corret the help, change : </br>
+</br>
+usage: ./sms_broadcast.py extension message </br>
+This script sends a message from the specified extension (number) to all devices connected to this base station </br>
+</br>
+```
+docker exec -ti karlibts ./scripts_spoof2/sms_broadcast.py 
+```
+to </br>
+</br>
+usage: ./sms_send_source_dest_msg.py  extension_source extension_destination  message </br>
+This script sends a message from the specified extension source (number) to extension destination connected to this base station </br>
+</br>
+```
+docker exec -ti karlibts ./scripts_spoof2/sms_send_source_dest_msg.py 
+```
+```
+exit
 ```
