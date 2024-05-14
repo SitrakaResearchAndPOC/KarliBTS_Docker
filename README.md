@@ -282,7 +282,7 @@ apt install netcat wireshark
 ```
 exit
 ```
-## LAUNCHING OMSOCOM ONE PHONE (SMS ONLY)
+## Launching osmocom for one phone (SMS ONLY)
 Terminal 1
 ```
 docker exec -ti karlibts ./osmocom/trx/src/host/osmocon/osmocon -m c123xor -p /dev/ttyUSB0 -c osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin
@@ -326,7 +326,7 @@ nc -u -l -p 4729 > /dev/null & wireshark -k -i lo -f 'port 4729'
 ```
 find gsmtap, gsm_sms , gsm_sms_ud
 
-## LAUNCHING OSMOCOM TWO PHONES (SMS AND CALL)
+## Launching osmocom for two phones (SMS AND CALL)
 Terminal 1
 ```
 docker exec -ti karlibts ./osmocom/trx/src/host/osmocon/osmocon -m c123xor -p /dev/ttyUSB0 -c osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin
@@ -370,7 +370,7 @@ xhost +
 ```
 docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
 ```
-## CODE MANAGING BTS
+## Code managing BTS
 ```
 lxc exec KarliBTS -- telnet localhost 4242
 ```
@@ -378,7 +378,7 @@ lxc exec KarliBTS -- telnet localhost 4242
 lxc exec KarliBTS -- telnet localhost 4241
 ```
 
-## RUNNING SPOOFING EXTENSION WITH SCRIPT1
+## Running spoofing extension 
 Tape ctrl+shit+T
 ```
 docker  exec -ti  karlibts bash
@@ -401,7 +401,7 @@ mv osmo-nitb-scripts/scripts_spoof1 /
 ```
 mv osmo-nitb-scripts/scripts_spoof2 /
 ```
-## spoof script1 modification
+## Spoof script1 modification
 ```
 cd  scripts_spoof1
 ```
@@ -427,7 +427,7 @@ Change sqlite file as following /hlr.sqlite3
 ```
 exit
 ```
-## REMARK AS SPOOF2
+## Spoof script2 modification
 ```
 docker exec -ti karlibts  bash
 ```
@@ -449,7 +449,7 @@ Change sqlite file as following /hlr.sqlite3
 ```
 exit
 ```
-## Spoof script2 modification
+## Spoof script2 remark
 ```
 docker exec -ti karlibts nano scripts_spoof2/sms_send_source_dest_msg.py 
 ```
@@ -471,4 +471,292 @@ docker exec -ti karlibts ./scripts_spoof2/sms_send_source_dest_msg.py
 ```
 ```
 exit
+```
+## Test spoofing1
+```
+docker exec -ti karlibts scripts_spoof1/delete_all.sh
+```
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+Change with the following imsi
+```
+docker exec -ti karlibts scripts_spoof1/set_imsi_extension.sh 646040227957426 0341220590
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_spoof_byextension.py  
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_broadcast.py 
+```
+## Test spoofing2
+```
+docker exec -ti karlibts python2 scripts_spoof2/show_subscribers.py
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220590 'alert corona'
+```
+run also,
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220599 'alert corona'
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_send_source_dest_msg.py 0341220590 0341220590 "alert corona v2"
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_spam.py 0341220590 3 "alert corona 3"
+```
+## Exporting image
+```
+docker ps
+```
+getting the <id>
+</br>
+```
+docker commit <id> karlibts
+```
+```
+docker save karlibts > karlibts.tar.gz
+```
+# LOAD AN RUN NUMBER 1 (SPOOFING SMS ONLY) 
+## Preparing images
+```
+docker load < karlibts.tar.gz
+```
+```
+docker run -tid --privileged -v /dev/bus/usb:/dev/bus/usb -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $XAUTHORITY:/home/user/.Xauthority:ro --net=host --env="DISPLAY=$DISPLAY" --env="LC_ALL=C.UTF-8" --env="LANG=C.UTF-8" --name karlibts karlibts
+```
+## Verify the usb port
+dmesg | grep ttyUSB*
+
+## Restart docker
+```
+docker restart karlibts 
+```
+## Deleting database
+```
+docker exec -ti karlibts scripts_spoof1/delete_all.sh
+```
+## launching osmocom (SMS ONLY)
+Terminal 1
+```
+docker exec -ti karlibts ./osmocom/trx/src/host/osmocon/osmocon -m c123xor -p /dev/ttyUSB0 -c osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin
+```
+or Terminal 1
+```
+docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB0 -c trx.highram.bin
+```
+Tape ctrl+shift+T </br>
+Find ARFCN </br>
+</br>
+Tape *#*#4636#*#* and choose GSM only on your Android phone </br>
+Installing network signal guru on your android phone </br>
+And finding the arfcn that this one is connect </br>
+Let's name this arfcn as ARFCN </br>
+</br>
+Terminal 2
+```
+docker exec -ti karlibts ./osmocom/trx/src/host/layer23/src/transceiver/transceiver -a ARFCN 
+```
+Tape ctrl+shift+T </br>
+Terminal 3
+```
+docker exec -ti karlibts osmo-nitb -c open-bsc.cfg -l hlr.sqlite3 -P -C --debug=DRLL:DCC:DMM:DRR:DRSL:DNM
+```
+Tape ctrl+shift+T </br>
+Terminal 4
+```
+docker exec -ti karlibts osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM -i 127.0.0.1
+```
+Terminal 5 </br>
+Tape ctrl+shift+T
+```
+xhost +
+```
+```
+docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
+```
+or (not more powerfull for bts, good for ms) 
+```
+nc -u -l -p 4729 > /dev/null & wireshark -k -i lo -f 'port 4729'
+```
+find gsmtap, gsm_sms , gsm_sms_ud
+## Code managing BTS
+```
+lxc exec KarliBTS -- telnet localhost 4242
+```
+```
+lxc exec KarliBTS -- telnet localhost 4241
+```
+
+## Testing spoof1
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+Take <imsi>  </br>
+</br>
+Change with the following imsi </br>
+```
+docker exec -ti karlibts scripts_spoof1/set_imsi_extension.sh <imsi> 0341220590
+```
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_spoof_byextension.py  
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_broadcast.py 
+```
+## Testing spoof2
+```
+docker exec -ti karlibts python2 scripts_spoof2/show_subscribers.py
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220590 'alert corona'
+```
+run also,
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220599 'alert corona'
+```
+# Verify the virtual TMSI (none)
+```
+docker exec -ti karlibts python2 scripts_spoof2/show_subscribers.py
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_send_source_dest_msg.py 0341220590 0341220590 "alert corona v2"
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_spam.py 0341220590 3 "alert corona 3"
+```
+# LOAD AN RUN NUMBER 2 (SPOOFING SMS AND CALL) 
+## Preparing docker
+```
+docker load < karlibts.tar.gz
+```
+```
+docker run -tid --privileged -v /dev/bus/usb:/dev/bus/usb -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $XAUTHORITY:/home/user/.Xauthority:ro --net=host --env="DISPLAY=$DISPLAY" --env="LC_ALL=C.UTF-8" --env="LANG=C.UTF-8" --name karlibts karlibts
+```
+## Finding the port of the phone
+dmesg | grep ttyUSB*
+## Resarting docker
+```
+docker restart karlibts 
+```
+## Deleting database
+```
+docker exec -ti karlibts scripts_spoof1/delete_all.sh
+```
+## Launching osmocom for two phones (SMS and CALLS)
+Terminal 1
+```
+docker exec -ti karlibts ./osmocom/trx/src/host/osmocon/osmocon -m c123xor -p /dev/ttyUSB0 -c osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin
+```
+or Terminal 1
+```
+docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB0 -c trx.highram.bin
+```
+Tape ctrl+shift+T </br>
+Terminal 2
+```
+docker exec -ti karlibts ./osmocom/trx/src/host/osmocon/osmocon -m c123xor -p /dev/ttyUSB1 -s /tmp/osmocom_l2.2 -c osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin 
+```
+or Terminal 2
+```
+docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB1 -s /tmp/osmocom_l2.2 -c trx.highram.bin 
+```
+Tape ctrl+shift+T </br>
+Find ARFCN </br>
+</br>
+Tape *#*#4636#*#* and choose GSM only on your Android phone </br>
+Installing network signal guru on your android phone </br>
+And finding the arfcn that this one is connect </br>
+Let's name this arfcn as ARFCN </br
+Terminal 3
+```
+docker exec -ti karlibts ./osmocom/trx/src/host/layer23/src/transceiver/transceiver -a ARFCN -2
+```
+Tape ctrl+shift+T </br>
+Terminal 4
+```
+docker exec -ti karlibts osmo-nitb -c open-bsc.cfg -l hlr.sqlite3 -P -C --debug=DRLL:DCC:DMM:DRR:DRSL:DNM
+```
+Tape ctrl+shift+T </br>
+Terminal 5
+```
+docker exec -ti karlibts  osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM -i 127.0.0.1
+```
+Terminal 5 </br>
+Tape ctrl+shift+T
+```
+xhost +
+```
+```
+docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
+```
+# Code managing the BTS
+```
+lxc exec KarliBTS -- telnet localhost 4242
+```
+```
+lxc exec KarliBTS -- telnet localhost 4241
+```
+
+# Testing calls
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+Take <imsi> </br>
+</br>
+```
+docker exec -ti karlibts scripts_spoof1/set_imsi_extension.sh <imsi> 0341220590
+```
+# Verifying the assocation of IMSI and Extension (MSISDN)
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+Making the spoof call
+
+
+## Testing spoof1
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+Take <imsi> </br>
+</br>
+Change with the following imsi </br>
+</br>
+```
+docker exec -ti karlibts scripts_spoof1/set_imsi_extension.sh <imsi> 0341220590
+```
+```
+docker exec -ti karlibts scripts_spoof1/finding_imsi_extenstion.sh
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_spoof_byextension.py  
+```
+```
+docker exec -ti karlibts python2 scripts_spoof1/sending_sms_broadcast.py 
+```
+## Testing spoff2
+```
+docker exec -ti karlibts python2 scripts_spoof2/show_subscribers.py
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220590 'alert corona'
+```
+run also,
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_broadcast.py 0341220599 'alert corona'
+```
+
+# verifying no TMSI for virtual number (none)
+```
+docker exec -ti karlibts python2 scripts_spoof2/show_subscribers.py
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_send_source_dest_msg.py 0341220590 0341220590 "alert corona v2"
+```
+```
+docker exec -ti karlibts python2 scripts_spoof2/sms_spam.py 0341220590 3 "alert corona 3"
 ```
