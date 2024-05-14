@@ -260,6 +260,7 @@ chmod +x osmocon
 Copying trx
 ```
 cp osmocom/trx/src/target/firmware/board/compal_e88/trx.highram.bin /
+```
 ## Before launching preparing all configs
 config file of osmo-bts
 ```
