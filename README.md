@@ -1,4 +1,4 @@
-![image](https://github.com/SitrakaResearchAndPOC/KarliBTS_Docker/assets/92709209/b2f72425-5ae8-4e86-9cc3-3d0ecb9fd4e2)# CREATE CONTAINERS DOCKER FOR KarliBTS
+# CREATE CONTAINERS DOCKER FOR KarliBTS
 ## Hardware schematic
 [demo1](https://www.youtube.com/watch?v=CebldhIqmDs) </br>
 [demos2](https://www.youtube.com/watch?v=_nGVeG_76W8&pp=ygUJa2FybGkgZ3Nt) </br>
@@ -85,7 +85,6 @@ mkdir osmocom
 cd osmocom
 ```
 installing libosomcore
-```
 ```
 git clone https://git.osmocom.org/libosmocore.git
 ```
