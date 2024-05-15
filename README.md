@@ -346,7 +346,7 @@ docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB1 -s /tmp/osmocom_l2
 ```
 Tape ctrl+shift+T </br>
 Find ARFCN </br>
-Tape *#*#4636#*#* and choose GSM only on your Android phone </br>
+Tape `*#*#4636#*#*` and choose GSM only on your Android phone </br>
 Installing network signal guru on your android phone </br>
 And finding the arfcn that this one is connect </br>
 Let's name this arfcn as ARFCN </br>
@@ -549,7 +549,7 @@ docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB0 -c trx.highram.bin
 Tape ctrl+shift+T </br>
 Find ARFCN </br>
 </br>
-Tape *#*#4636#*#* and choose GSM only on your Android phone </br>
+Tape `*#*#4636#*#*` and choose GSM only on your Android phone </br>
 Installing network signal guru on your android phone </br>
 And finding the arfcn that this one is connect </br>
 Let's name this arfcn as ARFCN </br>
@@ -668,7 +668,7 @@ docker exec -ti karlibts ./osmocon -m c123xor -p /dev/ttyUSB1 -s /tmp/osmocom_l2
 Tape ctrl+shift+T </br>
 Find ARFCN </br>
 </br>
-Tape *#*#4636#*#* and choose GSM only on your Android phone </br>
+Tape `*#*#4636#*#*` and choose GSM only on your Android phone </br>
 Installing network signal guru on your android phone </br>
 And finding the arfcn that this one is connect </br>
 Let's name this arfcn as ARFCN </br
