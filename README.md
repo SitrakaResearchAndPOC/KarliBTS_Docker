@@ -372,10 +372,10 @@ docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
 ```
 ## Code managing BTS
 ```
-lxc exec KarliBTS -- telnet localhost 4242
+docker exec -ti karlibts telnet localhost 4242
 ```
 ```
-lxc exec KarliBTS -- telnet localhost 4241
+docker exec -ti karlibts telnet localhost 4241
 ```
 
 ## Running spoofing extension 
@@ -583,10 +583,10 @@ nc -u -l -p 4729 > /dev/null & wireshark -k -i lo -f 'port 4729'
 find gsmtap, gsm_sms , gsm_sms_ud
 ## Code managing BTS
 ```
-lxc exec KarliBTS -- telnet localhost 4242
+docker exec -ti karlibts telnet localhost 4242
 ```
 ```
-lxc exec KarliBTS -- telnet localhost 4241
+docker exec -ti karlibts telnet localhost 4241
 ```
 
 ## Testing spoof1
@@ -696,10 +696,10 @@ docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
 ```
 # Code managing the BTS
 ```
-lxc exec KarliBTS -- telnet localhost 4242
+docker exec -ti karlibts localhost 4242
 ```
 ```
-lxc exec KarliBTS -- telnet localhost 4241
+docker exec -ti karlibts telnet localhost 4241
 ```
 
 # Testing calls
