@@ -317,6 +317,8 @@ docker exec -ti karlibts osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM -
 ```
 xhost +
 ```
+Tape ctrl+shift+T </br>
+Terminal 5
 ```
 docker exec -ti karlibts wireshark -k -f udp -Y gsmtap -i lo
 ```
@@ -364,6 +366,8 @@ Terminal 5
 ```
 docker exec -ti karlibts  osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM -i 127.0.0.1
 ```
+Tape ctrl+shift+T </br>
+Terminal 6
 ```
 xhost +
 ```
@@ -527,8 +531,9 @@ docker load < karlibts.tar.gz
 docker run -tid --privileged -v /dev/bus/usb:/dev/bus/usb -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $XAUTHORITY:/home/user/.Xauthority:ro --net=host --env="DISPLAY=$DISPLAY" --env="LC_ALL=C.UTF-8" --env="LANG=C.UTF-8" --name karlibts karlibts
 ```
 ## Verify the usb port
+```
 dmesg | grep ttyUSB*
-
+```
 ## Restart docker
 ```
 docker restart karlibts 
@@ -638,7 +643,9 @@ docker load < karlibts.tar.gz
 docker run -tid --privileged -v /dev/bus/usb:/dev/bus/usb -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $XAUTHORITY:/home/user/.Xauthority:ro --net=host --env="DISPLAY=$DISPLAY" --env="LC_ALL=C.UTF-8" --env="LANG=C.UTF-8" --name karlibts karlibts
 ```
 ## Finding the port of the phone
+```
 dmesg | grep ttyUSB*
+```
 ## Resarting docker
 ```
 docker restart karlibts 
@@ -671,7 +678,7 @@ Find ARFCN </br>
 Tape `*#*#4636#*#*` and choose GSM only on your Android phone </br>
 Installing network signal guru on your android phone </br>
 And finding the arfcn that this one is connect </br>
-Let's name this arfcn as ARFCN </br
+Let's name this arfcn as ARFCN </br>
 Terminal 3
 ```
 docker exec -ti karlibts ./osmocom/trx/src/host/layer23/src/transceiver/transceiver -a ARFCN -2
@@ -686,7 +693,7 @@ Terminal 5
 ```
 docker exec -ti karlibts  osmo-bts-trx -c osmo-bts.cfg --debug DRSL:DOML:DLAPDM -i 127.0.0.1
 ```
-Terminal 5 </br>
+Terminal 6 </br>
 Tape ctrl+shift+T
 ```
 xhost +
