@@ -63,6 +63,7 @@ Change apt file
  deb http://deb.debian.org/debian/ buster main contrib
  deb-src http://deb.debian.org/debian/ buster main contrib
 ```
+save by ctrl+x
 ``` 
 apt update
  ```
