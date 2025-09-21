@@ -34,6 +34,16 @@ xhost +
 docker exec -ti karlibts /bin/bash
 ```
 ```
+cat > /etc/apt/sources.list <<EOF
+> deb http://archive.debian.org/debian buster main contrib non-free
+> deb http://archive.debian.org/debian-security buster/updates main
+> EOF
+```
+```
+echo 'Acquire::Check-Valid-Until "0";' > /etc/apt/apt.conf.d/99no-check-valid-until
+```
+
+```
 apt update
 ```
 ```
