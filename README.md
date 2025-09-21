@@ -37,6 +37,7 @@ docker exec -ti karlibts /bin/bash
 cat > /etc/apt/sources.list <<EOF
 > deb http://archive.debian.org/debian buster main contrib non-free
 > deb http://archive.debian.org/debian-security buster/updates main
+> deb-src http://deb.debian.org/debian/ buster main contrib
 > EOF
 ```
 ```
